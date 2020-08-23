@@ -16,22 +16,29 @@ jobs:
     runs-on: windows-latest
       
     steps:        
-    - name: checkout
+    - name: Checkout
       uses: actions/checkout@v2
  
-    - name: install dotnet
+    - name: Install dotnet
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.301
+        dotnet-version: 3.1.x
  
-    -  name: dotnet restore    
+    -  name: Restore    
        run: dotnet restore
  
-    - name: dotnet build  
+    - name: Build  
       run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }}
  
-    - name: dotnet test
+    - name: Test
       run: dotnet test --no-restore
      
-    - name: dotnet publish
+    - name: Publish
       run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.BUILD_CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
+    
+    - name: Uplaod
+      uses: actions/upload-artifact@v2
+      with:
+        name: gha-testing-bin
+        path: ${{ env.WEB_PUBLISH_PATH }}\
+      
