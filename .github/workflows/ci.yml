@@ -7,7 +7,7 @@ on:
     branches: [ master ]
 
 env:
-  WEB_PUBLISH_PATH: ${{ env.GITHUB_WORKSPACE }}\published
+  WEB_PUBLISH_PATH: ${{ github.workspace }}\published
 
 jobs: 
   build:
