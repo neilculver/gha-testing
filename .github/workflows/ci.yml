@@ -12,7 +12,7 @@ env:
   WEB_PUBLISH_PATH: ${{ github.workspace }}\published
 
 jobs: 
-  build:
+  Build:
     runs-on: windows-latest
       
     steps:        
