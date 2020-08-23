@@ -9,12 +9,17 @@ on:
 jobs:
   build:
     runs-on: windows-latest
-    env:
-      CONFIG: Release
-      WEB_CSPROJ_PATH: ${{ env.GITHUB_WORKSPACE }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
-      WEB_PUBLISH_PATH: ${{ env.GITHUB_WORKSPACE }}\published
-
+      
     steps:
+    - name: set CONFIG
+      run: echo '::set-env name=CONFIG::Release'
+
+    - name: set WEB_CSPROJ_PATH
+      run: echo '::set-env name=WEB_CSPROJ_PATH::${{ env.GITHUB_WORKSPACE }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj'
+    
+    - name: set WEB_PUBLISH_PATH
+      run: echo '::set-env name=WEB_CSPROJ_PATH::${{ env.GITHUB_WORKSPACE }}\published'
+          
     - name: checkout
       uses: actions/checkout@v2
 
