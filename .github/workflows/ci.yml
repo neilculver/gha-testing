@@ -9,27 +9,28 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+    env:
+      CONFIG: Release
+      WEB_CSPROJ_PATH: ${{ env.GITHUB_WORKSPACE }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
+      WEB_PUBLISH_PATH: ${{ env.GITHUB_WORKSPACE }}\published
 
     steps:
     - name: checkout
       uses: actions/checkout@v2
+
+    - name: install dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+
+    - name: dotnet restore
+      run: dotnet restore
+
+    - name: dotnet build
+      run: dotnet build --no-restore --configuration ${{ env.CONFIG }}
+
+    - name: dotnet test
+      run: dotnet test --no-restore
     
-    - name: check environment
-      run: 'Get-ChildItem env:'
-
-    #- name: install dotnet
-    #  uses: actions/setup-dotnet@v1
-    #  with:
-    #    dotnet-version: 3.1.301
-
-    #- name: dotnet restore
-     # run: dotnet restore
-
-    #- name: dotnet build
-     # run: dotnet build --no-restore --configuration Release
-
-    #- name: dotnet test
-     # run: dotnet test --no-restore
-    
-    #- name: dotnet publish
-     # run: dotnet publish --no-build --configuration Release
+    - name: dotnet publish
+      run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
