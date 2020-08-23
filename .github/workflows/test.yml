@@ -1,4 +1,4 @@
-name: Attach release build
+name: Test
 
 on:
   release:
