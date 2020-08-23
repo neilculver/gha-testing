@@ -6,9 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
-jobs:
+jobs: 
   build:
     runs-on: windows-latest
+    
+    env:
+      WEB_PUBLISH_PATH: ${{ env.GITHUB_WORKSPACE }}\published
       
     steps:
     - name: set CONFIG
@@ -21,7 +24,7 @@ jobs:
       run: echo '::set-env name=WEB_CSPROJ_PATH::$GITHUB_WORKSPACE\published'
 
     - name: show environment
-      run: Get-ChildItem :env
+      run: 'Get-ChildItem env:'
           
 #    - name: checkout
 #      uses: actions/checkout@v2
