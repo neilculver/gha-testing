@@ -1,0 +1,13 @@
+name: Attach release build
+
+on:
+  release:
+    types: [ published ]
+
+jobs: 
+  Build:
+    runs-on: windows-latest
+
+    steps:        
+    - name: test
+      run: Write-Host ${{ toJSON(github.event) }}
