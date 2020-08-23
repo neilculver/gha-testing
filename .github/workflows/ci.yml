@@ -6,12 +6,12 @@ on:
   pull_request:
     branches: [ master ]
 
+env:
+  WEB_PUBLISH_PATH: ${{ env.GITHUB_WORKSPACE }}\published
+
 jobs: 
   build:
     runs-on: windows-latest
-    
-    env:
-      WEB_PUBLISH_PATH: \published
       
     steps:
     - name: show environment
