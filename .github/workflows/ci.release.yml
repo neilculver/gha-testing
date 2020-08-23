@@ -1,4 +1,4 @@
-name: Upload release build
+name: Attach release build
 
 on:
   release:
