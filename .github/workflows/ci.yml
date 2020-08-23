@@ -7,32 +7,31 @@ on:
     branches: [ master ]
 
 env:
+  BUILD_CONFIG: Release
+  WEB_CSPROJ_PATH: ${{ github.workspace }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
   WEB_PUBLISH_PATH: ${{ github.workspace }}\published
 
 jobs: 
   build:
     runs-on: windows-latest
       
-    steps:
-    - name: show environment
-      run: 'Get-ChildItem env:'
-          
-#    - name: checkout
-#      uses: actions/checkout@v2
-#
-#    - name: install dotnet
-#      uses: actions/setup-dotnet@v1
-#      with:
-#        dotnet-version: 3.1.301
-#
-#    - name: dotnet restore
-#      run: dotnet restore
-#
-#    - name: dotnet build
-#      run: dotnet build --no-restore --configuration ${{ env.CONFIG }}
-#
-#    - name: dotnet test
-#      run: dotnet test --no-restore
-#    
-#    - name: dotnet publish
-#      run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
+    steps:        
+    - name: checkout
+      uses: actions/checkout@v2
+ 
+    - name: install dotnet
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+ 
+    -  name: dotnet restore    
+       run: dotnet restore
+ 
+    - name: dotnet build  
+      run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }}
+ 
+    - name: dotnet test
+      run: dotnet test --no-restore
+     
+    - name: dotnet publish
+      run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.BUILD_CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
