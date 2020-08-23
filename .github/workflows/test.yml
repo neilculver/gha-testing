@@ -1,8 +1,10 @@
 name: Test
 
 on:
-  release:
-    types: [ published ]
+  #release:
+    #types: [ published ]
+  push:
+    branches: [ master ]
 
 jobs: 
   Build:
@@ -10,4 +12,4 @@ jobs:
 
     steps:        
     - name: test
-      run: Write-Host ${{ toJSON(github.event) }}
+      run: echo "::debug::${{ toJSON(github.event) }}"
