@@ -15,27 +15,30 @@ jobs:
       run: echo '::set-env name=CONFIG::Release'
 
     - name: set WEB_CSPROJ_PATH
-      run: echo '::set-env name=WEB_CSPROJ_PATH::${{ env.GITHUB_WORKSPACE }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj'
+      run: echo '::set-env name=WEB_CSPROJ_PATH::$GITHUB_WORKSPACE\src\TestActionsApi.Web\TestActionsApi.Web.csproj'
     
     - name: set WEB_PUBLISH_PATH
-      run: echo '::set-env name=WEB_CSPROJ_PATH::${{ env.GITHUB_WORKSPACE }}\published'
+      run: echo '::set-env name=WEB_CSPROJ_PATH::$GITHUB_WORKSPACE\published'
+
+    - name: show environment
+      run: Get-ChildItem :env
           
-    - name: checkout
-      uses: actions/checkout@v2
-
-    - name: install dotnet
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.301
-
-    - name: dotnet restore
-      run: dotnet restore
-
-    - name: dotnet build
-      run: dotnet build --no-restore --configuration ${{ env.CONFIG }}
-
-    - name: dotnet test
-      run: dotnet test --no-restore
-    
-    - name: dotnet publish
-      run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
+#    - name: checkout
+#      uses: actions/checkout@v2
+#
+#    - name: install dotnet
+#      uses: actions/setup-dotnet@v1
+#      with:
+#        dotnet-version: 3.1.301
+#
+#    - name: dotnet restore
+#      run: dotnet restore
+#
+#    - name: dotnet build
+#      run: dotnet build --no-restore --configuration ${{ env.CONFIG }}
+#
+#    - name: dotnet test
+#      run: dotnet test --no-restore
+#    
+#    - name: dotnet publish
+#      run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
