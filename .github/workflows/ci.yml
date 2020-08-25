@@ -40,13 +40,13 @@ jobs:
       run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.BUILD_CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
     
     - name: Zip
-      run: Compress-Archive -Path ${{ env.WEB_PUBLISH_PATH }} -DestinationPath ${{ env.ARTIFACT_ZIP_PATH }}
+      run: Compress-Archive -Path ${{ env.WEB_PUBLISH_PATH }} -DestinationPath ${{ env.WEB_ZIP_PATH }}
     
     - name: Uplaod
       uses: actions/upload-artifact@v2
       with:
         name: gha-testing-build
-        path: ${{ env.WEB_PUBLISH_PATH }}\
+        path: ${{ env.WEB_ZIP_PATH }}\
 
   Store:
       needs: Build
