@@ -1,0 +1,15 @@
+name: Test
+
+on:
+  #release:
+    #types: [ published ]
+  push:
+    branches: [ master ]
+
+jobs: 
+  Build:
+    runs-on: windows-latest
+
+    steps:        
+    - name: test
+      run: echo "::debug::${{ toJSON(github.event) }}"

@@ -1,20 +1,20 @@
-name: CI
+name: Attach release build
 
 on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+  release:
+    types: [ published ]
 
 env:
   BUILD_CONFIG: Release
   WEB_CSPROJ_PATH: ${{ github.workspace }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
   WEB_PUBLISH_PATH: ${{ github.workspace }}\published
+  WEB_ZIP_NAME: published.zip
+  WEB_ZIP_PATH: ${{ github.workspace }}\published.zip
 
 jobs: 
   Build:
     runs-on: windows-latest
-      
+
     steps:        
     - name: Checkout
       uses: actions/checkout@v2
@@ -24,8 +24,8 @@ jobs:
       with:
         dotnet-version: 3.1.x
  
-    -  name: Restore    
-       run: dotnet restore
+    - name: Restore    
+      run: dotnet restore
  
     - name: Build  
       run: dotnet build --no-restore --configuration ${{ env.BUILD_CONFIG }}
@@ -36,9 +36,16 @@ jobs:
     - name: Publish
       run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.BUILD_CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
     
-    - name: Uplaod
-      uses: actions/upload-artifact@v2
+    - name: Zip
+      run: Compress-Archive -Path ${{ env.WEB_PUBLISH_PATH }} -DestinationPath ${{ env.WEB_ZIP_PATH }}
+    
+    - name: Upload
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: gha-testing-bin
-        path: ${{ env.WEB_PUBLISH_PATH }}\
-      
+        upload_url: ${{ github.event.upload_url }}
+        asset_path: ${{ env.WEB_ZIP_PATH }}
+        asset_name: ${{ env.WEB_ZIP_NAME }}
+        asset_content_type: application/zip
+    
