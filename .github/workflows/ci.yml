@@ -73,7 +73,7 @@ jobs:
               --container-name root \
               --file ${{ env.ARTIFACT_ZIP_PATH }} \
               --name ${{ github.sha }} \
-              --auth-mode: login
+              --auth-mode login
 
         - name: Logout
           uses: azure/cli@v1.0.0
