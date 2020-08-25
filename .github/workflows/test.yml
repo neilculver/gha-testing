@@ -10,6 +10,9 @@ jobs:
   Build:
     runs-on: windows-latest
 
-    steps:        
-    - name: test
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2.3.2
+    
+    - name: run debug action
       uses: ./src/actions/
