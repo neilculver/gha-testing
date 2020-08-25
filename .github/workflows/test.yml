@@ -12,4 +12,4 @@ jobs:
 
     steps:        
     - name: test
-      run: echo "::debug::${{ toJSON(github.event) }}"
+      uses: ./src/actions/
