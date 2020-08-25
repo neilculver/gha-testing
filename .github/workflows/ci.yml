@@ -10,8 +10,9 @@ env:
   BUILD_CONFIG: Release
   WEB_CSPROJ_PATH: ${{ github.workspace }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
   WEB_PUBLISH_PATH: ${{ github.workspace }}\published
-  ARTIFACT_DOWNLOAD_PATH: ${{ github.workspace }}\artifact
-  ARTIFACT_ZIP_PATH: ${{ github.workspace }}\artifact.zip
+  WEB_ZIP_PATH: ${{ github.workspace }}\published.zip
+  ARTIFACT_DOWNLOAD_PATH: ${{ github.workspace }}/artifact
+  ARTIFACT_ZIP_PATH: ${{ github.workspace }}/artifact/published.zip
 
 jobs: 
   Build:
@@ -38,6 +39,9 @@ jobs:
     - name: Publish
       run: dotnet publish ${{ env.WEB_CSPROJ_PATH }} --no-build --configuration ${{ env.BUILD_CONFIG }} --output ${{ env.WEB_PUBLISH_PATH }}
     
+    - name: Zip
+      run: Compress-Archive -Path ${{ env.WEB_PUBLISH_PATH }} -DestinationPath ${{ env.ARTIFACT_ZIP_PATH }}
+    
     - name: Uplaod
       uses: actions/upload-artifact@v2
       with:
@@ -46,7 +50,7 @@ jobs:
 
   Store:
       needs: Build
-      runs-on: windows-latest
+      runs-on: ubuntu-latest
       
       steps:
         - name: Download
@@ -54,10 +58,7 @@ jobs:
           with:
             name: gha-testing-build
             path: ${{ env.ARTIFACT_DOWNLOAD_PATH }}
-            
-        - name: Zip
-          run: Compress-Archive -Path ${{ env.ARTIFACT_DOWNLOAD_PATH }} -DestinationPath ${{ env.ARTIFACT_ZIP_PATH }}
-            
+
         - name: Authenticate
           uses: azure/login@v1.1
           with:
