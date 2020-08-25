@@ -1,0 +1,5 @@
+name: 'Debug GitHub Action'
+description: 'Log the action context'
+runs:
+  using: 'node12'
+  main: 'index.js'
