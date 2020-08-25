@@ -10,6 +10,8 @@ env:
   BUILD_CONFIG: Release
   WEB_CSPROJ_PATH: ${{ github.workspace }}\src\TestActionsApi.Web\TestActionsApi.Web.csproj
   WEB_PUBLISH_PATH: ${{ github.workspace }}\published
+  ARTIFACT_DOWNLOAD_PATH: ${{ github.workspace }}\artifact
+  ARTIFACT_ZIP_PATH: ${{ github.workspace }}\artifact.zip
 
 jobs: 
   Build:
@@ -39,6 +41,34 @@ jobs:
     - name: Uplaod
       uses: actions/upload-artifact@v2
       with:
-        name: gha-testing-bin
+        name: gha-testing-build
         path: ${{ env.WEB_PUBLISH_PATH }}\
+
+  Store:
+      needs: Build
+      runs-on: windows-latest
       
+      steps:
+        - name: Download
+          uses: actions/download-artifact@v2
+          with:
+            name: gha-testing-build
+            path: ${{ env.ARTIFACT_DOWNLOAD_PATH }}
+            
+        - name: Zip
+          run: Compress-Archive -Path ${{ env.ARTIFACT_DOWNLOAD_PATH }} -DestinationPath ${{ env.ARTIFACT_ZIP_PATH }}
+            
+        - name: Authenticate
+          uses: azure/login@v1.1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            
+        - name: Upload
+          uses: azure/cli@v1.0.0
+          with:
+            inlineScript: az storage blob upload --account-name ghaartifacts --container-name root --file ${{ env.ARTIFACT_ZIP_PATH }} --name ${{ github.sha }}
+
+        - name: Logout
+          uses: azure/cli@v1.0.0
+          with:
+            inlineScript: az logout
