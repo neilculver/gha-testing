@@ -8,7 +8,7 @@ env:
   WEB_PUBLISH_PATH: ${{ github.workspace }}\src
   WEB_ZIP_PATH: ${{ github.workspace }}\published.zip
   ARTIFACT_DOWNLOAD_PATH: ${{ github.workspace }}/artifact
-  ARTIFACT_ZIP_PATH: ${{ github.workspace }}/artifact/published.zip
+  ARTIFACT_ZIP_PATH: $GITHUB_WORKSPACE/artifact/published.zip
 
 jobs:
   build:
@@ -39,9 +39,6 @@ jobs:
         with:
           name: build
           path: ${{ env.ARTIFACT_DOWNLOAD_PATH }}
-          
-      - name: show
-        run: ls ${{ env.ARTIFACT_DOWNLOAD_PATH }}
 
       - name: authenticate
         uses: azure/login@v1.1
