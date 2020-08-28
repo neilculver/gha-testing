@@ -1,0 +1,14 @@
+name: Fake Test CD
+
+on:
+  workflow_run: 
+    workflows: [ "Fake CI" ]
+    types: [ completed ]
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: log
+        run: echo "Hi"
