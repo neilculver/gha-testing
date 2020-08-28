@@ -36,7 +36,7 @@ jobs:
           inlineScript: az logout
           
       - name: show
-        run: ls $GITHUB_WORKSPACE/artifact
+        run: ls $GITHUB_WORKSPACE
       
       - name: extratct
         run: unzip ${{ env.ARTIFACT_ZIP_PATH }} -d ${{ env.ARTIFACT_EXTRACT_PATH }}
