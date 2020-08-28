@@ -7,7 +7,7 @@ on:
 
 env:
   ARTIFACT_ZIP_PATH: $GITHUB_WORKSPACE/published.zip
-  ARTIFACT_EXTRACT_PATH: $GITHUB_WORKSPACE/extract
+  ARTIFACT_EXTRACT_PATH: ${{ github.workspace }}/extract
 
 jobs:
   extract:
