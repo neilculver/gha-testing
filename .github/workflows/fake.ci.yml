@@ -1,0 +1,65 @@
+name: Fake CI
+
+on:
+  push:
+    branches: [ master ]
+    
+env:
+  WEB_PUBLISH_PATH: ${{ github.workspace }}\src
+  WEB_ZIP_PATH: ${{ github.workspace }}\published.zip
+  ARTIFACT_DOWNLOAD_PATH: ${{ github.workspace }}/artifact
+  ARTIFACT_ZIP_PATH: ${{ github.workspace }}/artifact/published.zip
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: checkout
+    - uses: actions/checkout@v2
+
+    # restore/build/test/publish
+    
+    - name: zip
+      run: Compress-Archive -Path ${{ env.WEB_PUBLISH_PATH }} -DestinationPath ${{ env.WEB_ZIP_PATH }}
+    
+    - name: upload
+      uses: actions/upload-artifact@v2
+      with:
+        name: build
+        path: ${{ env.WEB_ZIP_PATH }}
+
+  store:
+    needs: build
+    runs-on: ubuntu-latest
+      
+    steps:
+      - name: download
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: ${{ env.ARTIFACT_DOWNLOAD_PATH }}
+          
+      - name: show
+        run: ls ${{ env.ARTIFACT_DOWNLOAD_PATH }}
+
+      - name: authenticate
+        uses: azure/login@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: upload
+        uses: azure/cli@v1.0.0
+        with:
+          inlineScript: |
+            az storage blob upload \
+            --account-name ghaartifacts \
+            --container-name root \
+            --file ${{ env.ARTIFACT_ZIP_PATH }} \
+            --name ${{ github.sha }} \
+            --auth-mode login
+
+      - name: logout
+        uses: azure/cli@v1.0.0
+        with:
+          inlineScript: az logout
