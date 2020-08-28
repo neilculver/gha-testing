@@ -5,10 +5,44 @@ on:
     workflows: [ "Fake CI" ]
     types: [ completed ]
 
+env:
+  ARTIFACT_ZIP_PATH: $GITHUB_WORKSPACE/artifact/published.zip
+  ARTIFACT_EXTRACT_PATH: $GITHUB_WORKSPACE/extract
+
 jobs:
   extract:
     runs-on: ubuntu-latest
 
     steps:
-      - name: log
-        run: echo "Hi"
+      - name: authenticate
+        uses: azure/login@v1.1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: download
+        uses: azure/cli@v1.0.0
+        with:
+          inlineScript: |
+            az storage blob download \
+            --account-name ghaartifacts \
+            --container-name root \
+            --file ${{ env.ARTIFACT_ZIP_PATH }} \
+            --name ${{ github.sha }} \
+            --auth-mode login
+
+      - name: logout
+        uses: azure/cli@v1.0.0
+        with:
+          inlineScript: az logout
+          
+      - name: show
+        run: ls $GITHUB_WORKSPACE/artifact
+      
+      - name: extratct
+        run: unzip ${{ env.ARTIFACT_ZIP_PATH }} -d ${{ env.ARTIFACT_EXTRACT_PATH }}
+      
+      - name: upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy
+          path: ${{ env.ARTIFACT_EXTRACT_PATH }}\
